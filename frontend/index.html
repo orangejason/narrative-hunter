@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Narrative Hunter | OnchainOS × Jumpbot</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-group">
+        <img src="https://www.okx.com/cdn/assets/imgs/2411/3B748D3690A94961.png" alt="OnchainOS" class="logo-img" />
+        <span class="logo-x">×</span>
+        <img src="https://jumpbot.ai/logo.png" alt="Jumpbot" class="logo-img jumpbot-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'" />
+        <span class="logo-text-fallback" style="display:none">Jumpbot</span>
+      </div>
+      <h1 class="site-title">Narrative Hunter</h1>
+      <span class="site-subtitle">热点叙事狙击平台</span>
+    </div>
+    <div class="header-right">
+      <div class="live-indicator"><span class="pulse"></span> LIVE</div>
+      <span class="update-time" id="updateTime">--</span>
+    </div>
+  </header>
+
+  <!-- AI Engine Info Bar -->
+  <div class="ai-info-bar">
+    <div class="ai-info-toggle" onclick="toggleAiInfo()">
+      <span class="ai-info-badge">🤖 AI 引擎信息</span>
+      <span class="ai-info-arrow" id="aiInfoArrow">▼</span>
+    </div>
+    <div class="ai-info-panel" id="aiInfoPanel" style="display:none">
+      <div class="ai-info-grid">
+        <div class="ai-info-item">
+          <div class="ai-info-label">Claw 型号</div>
+          <div class="ai-info-value">
+            <img src="https://avatars.githubusercontent.com/u/198958399" alt="OpenClaw" style="height:20px;border-radius:4px;vertical-align:middle" onerror="this.style.display='none'" />
+            OpenClaw Agent v2026.3
+          </div>
+        </div>
+        <div class="ai-info-item">
+          <div class="ai-info-label">大模型版本</div>
+          <div class="ai-info-value">Claude Opus 4.6 <span style="color:var(--purple);font-size:11px">(claude-opus-4-6)</span></div>
+        </div>
+        <div class="ai-info-item ai-info-prompt-item">
+          <div class="ai-info-label">提示词 <span style="font-weight:400;color:var(--text-muted)">(Structured System Prompt)</span></div>
+          <pre class="ai-info-prompt">═══════════════════════════════════════════════════════════════
+  NARRATIVE HUNTER — AI-Powered On-Chain Narrative Sniper
+  Powered by OKX OnchainOS × Jumpbot.ai
+═══════════════════════════════════════════════════════════════
+
+## Role & Mission
+你是 Narrative Hunter — 一个基于 OKX OnchainOS 全链数据基础设施构建的
+专业级链上热点叙事狙击 AI 引擎。
+
+核心使命：通过 OKX OnchainOS 提供的全链实时数据管道，结合多维社交信号
+源，对链上热点叙事进行毫秒级捕捉、结构化分析与智能发币推荐。
+
+═══════════════════════════════════════════════════════════════
+## 核心架构：OKX OnchainOS 数据基础设施
+═══════════════════════════════════════════════════════════════
+
+OKX OnchainOS 是本平台的数据中枢与核心引擎。作为 OKX 推出的下一代
+链上操作系统，OnchainOS 提供了业界最全面的链上数据基础设施：
+
+┌─────────────────────────────────────────────────────────────┐
+│  OKX OnchainOS Skills 矩阵（已集成 5 大核心模块）           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. okx-dex-market    — DEX 实时行情引擎                    │
+│     • 实时链上代币价格聚合（跨 500+ DEX 数据源）            │
+│     • K线/蜡烛图数据（1m ~ 1M 多时间粒度）                 │
+│     • 链上交易流水实时推送                                  │
+│     • 指数价格计算（多源加权）                              │
+│     覆盖：Solana / Ethereum / Base / BSC / Arbitrum /       │
+│           Polygon / Avalanche / Optimism 等 20+ 公链        │
+│                                                             │
+│  2. okx-dex-token     — 代币智能发现引擎                    │
+│     • 全链代币搜索（按名称、合约地址、关键词）              │
+│     • Trending Token 热榜实时排名                           │
+│     • 代币元数据深度分析（市值/流动性/持仓分布）            │
+│     • 持币地址分析 & 巨鲸持仓监控                           │
+│     • 安全评分 & 合约风险检测                               │
+│                                                             │
+│  3. okx-dex-swap      — DEX 聚合交易引擎                    │
+│     • 聚合 500+ DEX 流动性源的最优路由                      │
+│     • 智能滑点控制 & 价格冲击保护                           │
+│     • 跨 DEX 路径优化（Gas 最优 / 价格最优）                │
+│     • 支持一键执行链上交易                                  │
+│                                                             │
+│  4. okx-onchain-gateway — 链上网关服务                      │
+│     • Gas 价格实时估算 & 交易模拟                           │
+│     • 签名交易广播 & 状态追踪                               │
+│     • 批量交易执行                                          │
+│                                                             │
+│  5. okx-wallet-portfolio — 钱包资产全景                     │
+│     • 多链钱包余额聚合查询                                  │
+│     • DeFi 仓位追踪                                         │
+│     • 资产组合价值实时计算                                  │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+## 多源数据采集层（四源并行实时采集）
+═══════════════════════════════════════════════════════════════
+
+除 OKX OnchainOS 核心数据管道外，系统同时接入以下辅助数据源，
+形成全维度的市场感知网络：
+
+┌── 数据源 1：OKX OnchainOS（核心）──────────────────────────┐
+│  • DEX 实时行情 & 价格数据（okx-dex-market）               │
+│  • 全链 Trending Token 热榜（okx-dex-token）               │
+│  • 代币深度分析 & 持仓分布（okx-dex-token）                │
+│  • 聪明钱钱包追踪 & 资产组合（okx-wallet-portfolio）       │
+│  → 提供链上数据的"真相之源"                                │
+└────────────────────────────────────────────────────────────┘
+
+┌── 数据源 2：Binance Web3 API ─────────────────────────────┐
+│  • Social Rush: 社交叙事话题实时排行                        │
+│    - topicNameCn/En 双语话题名                             │
+│    - aiSummary 自动摘要                                    │
+│    - tokenList 关联代币列表                                │
+│    - KOL 链接引用                                          │
+│  • Social Hype: 代币社交情绪热度评分                        │
+│  • Trending Tokens: 全链热门代币（价格/交易量/市值）       │
+│  • Smart Money Inflow: 聪明钱资金净流入排行                │
+│  • Meme Rush: Pump.fun 新 meme 进度追踪                    │
+│    - bonding curve 进度百分比                               │
+│    - 开发者信息 & 部署时间                                 │
+│  • Leaderboard: 链上钱包 PnL 排行榜                        │
+│  → 提供社交情绪 & 叙事维度数据                             │
+└────────────────────────────────────────────────────────────┘
+
+┌── 数据源 3：6551.io OpenTwitter API ──────────────────────┐
+│  • twitter_search: KOL 推文实时检索                         │
+│    - 支持关键词、代币名、合约地址搜索                      │
+│    - minLikes / maxResults / product=Top 过滤               │
+│  • twitter_user_info: KOL 画像分析                          │
+│    - 粉丝数、推文数、验证状态、影响力评估                  │
+│  → 反向搜索热门代币背后的 KOL 讨论与叙事角度              │
+└────────────────────────────────────────────────────────────┘
+
+┌── 数据源 4：Bitget Wallet API ────────────────────────────┐
+│  • Rankings: topGainers / topLosers 实时排行                │
+│  • Historical Coins: 新上线代币时间线追踪                   │
+│  → 补充 CEX 侧热度视角 & 新币首发信号                      │
+└────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+## 核心逻辑：叙事狙击流水线（Pipeline）
+═══════════════════════════════════════════════════════════════
+
+  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+  │ 1. 采集  │ →  │ 2. 爬榜  │ →  │ 3. 反推  │ →  │ 4. 造币  │
+  │ 四源并行 │    │ 热点代币 │    │ 叙事角度 │    │ 一键发射 │
+  └──────────┘    └──────────┘    └──────────┘    └──────────┘
+
+  Step 1 — 数据采集（四源并行实时拉取）
+  ├─ OKX OnchainOS: DEX 行情 + Trending + 持仓分析
+  ├─ Binance: Social Rush + Hype + Smart Money
+  ├─ 6551 Twitter: KOL 推文 + 社交信号
+  └─ Bitget: 涨跌幅排行 + 新币追踪
+
+  Step 2 — 爬热点币榜单
+  ├─ 聚合四源数据，提取当前市场真正在涨的代币
+  ├─ 按热度/涨幅/交易量/聪明钱流入 多维排序
+  └─ 去重 & 交叉验证（同一代币多源确认）
+
+  Step 3 — 反向搜索叙事（核心差异化能力）
+  ├─ 对热门代币进行 Twitter KOL 讨论反查
+  ├─ 分析 Binance Social Rush 中的关联叙事
+  ├─ 提炼叙事角度 & 事件触发因子
+  └─ 热度评分算法：
+      heat = w1×社交讨论量 + w2×价格变动幅度
+           + w3×交易量增速 + w4×聪明钱流入量
+      (w1=0.3, w2=0.25, w3=0.25, w4=0.2)
+
+  Step 4 — 基于叙事生成代币方案
+  ├─ 从热门叙事中提炼 meme coin 创意
+  ├─ 生成：Symbol + Name + 中文描述（带 emoji，有冲击力）
+  ├─ 通过 6551 Twitter API 搜索高热度图片作为 Logo
+  └─ 一键提交到 Jumpbot.ai 发射器
+
+  ⚠️ 关键原则：不凭空构造热点！
+     必须基于实际市场数据 → 反推叙事 → 再造币
+
+═══════════════════════════════════════════════════════════════
+## 输出结构定义
+═══════════════════════════════════════════════════════════════
+
+  热点叙事卡片 {
+    title: string          // 叙事标题（中文）
+    description: string    // 详细描述 + emoji
+    heat: number           // 热度评分 0-100
+    kols: string[]         // 关联 KOL Twitter 账号
+    tokens: [{             // 关联代币列表
+      symbol, price, change24h, volume, contractAddress
+    }]
+    source: string         // 叙事来源标识
+    timestamp: ISO8601
+  }
+
+  热门代币排行 {
+    symbol, name, price, change24h, volume24h,
+    marketCap, liquidity, holders, chain, logo,
+    source: "onchain_os" | "binance" | "bitget" | "ave"
+  }
+
+  聪明钱监控 {
+    wallets: [{ address, label, pnl, avatar }]
+    smartMoneyTokens: [{
+      symbol, price, change24h, marketCap, volume,
+      smartMoneyInflow, logo
+    }]
+  }
+
+  发币建议 {
+    symbol, name, description, narrativeSource, heat
+  }
+
+═══════════════════════════════════════════════════════════════
+## 链支持（OKX OnchainOS 全链覆盖）
+═══════════════════════════════════════════════════════════════
+
+  主力链：Solana (501) | Ethereum (1) | BSC (56) | Base (8453)
+          Arbitrum (42161) | Polygon (137) | Avalanche (43114)
+          Optimism (10) | zkSync Era (324) | Linea (59144)
+
+  扩展链：Fantom | Cronos | Mantle | Scroll | Blast |
+          Sui | Aptos | TON | TRON | OKT Chain (X Layer)
+          + 更多 EVM & 非 EVM 链持续接入中...
+
+═══════════════════════════════════════════════════════════════
+## 发币提交接口（Jumpbot.ai）
+═══════════════════════════════════════════════════════════════
+
+  POST https://jumpad.fun/api/memecoin/openClawBot
+  Content-Type: multipart/form-data
+
+  Fields:
+    symbol  — 代币 Ticker（如 DOGE, PEPE）
+    name    — 代币全名
+    descr   — 叙事描述（中文 + emoji）
+    logo    — Logo 图片文件（PNG/JPG, &lt;2MB）
+
+═══════════════════════════════════════════════════════════════
+## 系统约束 & 质量保证
+═══════════════════════════════════════════════════════════════
+
+  ✅ 所有叙事描述必须使用中文，带 emoji，有冲击力
+  ✅ 不凭空构造热点 — 必须基于实际链上 & 社交数据反推叙事
+  ✅ 热度评分基于社交讨论量 + 价格变动 + 交易量 + 聪明钱流入
+  ✅ 多源交叉验证 — 至少 2 个数据源确认后才标记为有效叙事
+  ✅ 自动去重 — 已提交代币通过 submitted.txt 防止重复
+  ✅ 回测验证 — 每轮生成后通过 DexScreener + Bitget 回测命中率
+  ✅ 数据刷新频率：叙事 5min / 代币 1min / 聪明钱 3min
+
+═══════════════════════════════════════════════════════════════
+  Built on OKX OnchainOS — The Future of On-Chain Intelligence
+  https://github.com/okx/onchainos-skills
+═══════════════════════════════════════════════════════════════</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="narratives">🔥 热点叙事</button>
+    <button class="tab" data-tab="tokens">📊 热门代币</button>
+    <button class="tab" data-tab="smartmoney">🐋 聪明钱</button>
+    <button class="tab" data-tab="generator">🚀 一键发币</button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <!-- Tab 1: Hot Narratives -->
+    <section class="tab-panel active" id="panel-narratives">
+      <div class="panel-header">
+        <h2>🔥 实时热点叙事</h2>
+        <div class="filter-bar">
+          <select id="chainFilter" class="filter-select">
+            <option value="all">全链</option>
+            <option value="501">Solana</option>
+            <option value="1">Ethereum</option>
+            <option value="56">BSC</option>
+            <option value="8453">Base</option>
+            <option value="42161">Arbitrum</option>
+          </select>
+          <button class="btn btn-refresh" onclick="loadNarratives()">刷新</button>
+        </div>
+      </div>
+
+      <div class="narratives-grid" id="narrativesGrid">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>加载热点叙事中...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Trending Tokens -->
+    <section class="tab-panel" id="panel-tokens">
+      <div class="panel-header">
+        <h2>📊 热门代币排行</h2>
+        <div class="filter-bar">
+          <select id="tokenChainFilter" class="filter-select">
+            <option value="all">全链</option>
+            <option value="501">Solana</option>
+            <option value="1">Ethereum</option>
+            <option value="56">BSC</option>
+            <option value="8453">Base</option>
+          </select>
+          <select id="tokenSortFilter" class="filter-select">
+            <option value="trending">趋势热度</option>
+            <option value="gainers">涨幅榜</option>
+            <option value="volume">交易量</option>
+            <option value="new">新币</option>
+          </select>
+          <button class="btn btn-refresh" onclick="loadTokens()">刷新</button>
+        </div>
+      </div>
+
+      <div class="tokens-table-wrapper">
+        <table class="tokens-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>代币</th>
+              <th>价格</th>
+              <th>24h涨跌</th>
+              <th>24h交易量</th>
+              <th>市值</th>
+              <th>流动性</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tokensBody">
+            <tr><td colspan="8" class="loading-state"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab 3: Smart Money -->
+    <section class="tab-panel" id="panel-smartmoney">
+      <div class="panel-header">
+        <h2>🐋 聪明钱交易监控</h2>
+        <div class="filter-bar">
+          <select id="smChainFilter" class="filter-select">
+            <option value="501">Solana</option>
+            <option value="1">Ethereum</option>
+            <option value="56">BSC</option>
+            <option value="8453">Base</option>
+          </select>
+          <button class="btn btn-refresh" onclick="loadSmartMoney()">刷新</button>
+        </div>
+      </div>
+
+      <div class="smart-money-grid" id="smartMoneyGrid">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>加载聪明钱数据中...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Coin Generator -->
+    <section class="tab-panel" id="panel-generator">
+      <div class="panel-header">
+        <h2>🚀 一键发币到 Jumpbot</h2>
+        <p class="panel-desc">基于当前热点叙事，AI 自动生成代币方案，一键提交到 Jumpbot.ai 发射器</p>
+      </div>
+
+      <div class="generator-layout">
+        <!-- Left: AI Suggestions -->
+        <div class="gen-suggestions">
+          <div class="gen-section-header">
+            <h3>🤖 AI 发币建议</h3>
+            <button class="btn btn-primary" onclick="generateSuggestions()">生成建议</button>
+          </div>
+          <div class="suggestions-list" id="suggestionsList">
+            <div class="empty-state">
+              <p>点击「生成建议」，AI 将基于当前热点叙事为你推荐发币角度</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Launch Form -->
+        <div class="gen-form">
+          <h3>📝 发币信息</h3>
+          <form id="launchForm" onsubmit="submitCoin(event)">
+            <div class="form-group">
+              <label>代币符号 (Symbol)</label>
+              <input type="text" id="coinSymbol" placeholder="如 DOGE, PEPE" required maxlength="12" />
+            </div>
+            <div class="form-group">
+              <label>代币名称 (Name)</label>
+              <input type="text" id="coinName" placeholder="代币全名" required />
+            </div>
+            <div class="form-group">
+              <label>叙事描述</label>
+              <textarea id="coinDescr" placeholder="中文描述，带emoji，有冲击力！" required rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Logo</label>
+              <div class="logo-upload">
+                <input type="file" id="coinLogo" accept="image/*" />
+                <div class="logo-preview" id="logoPreview">
+                  <span>点击或拖拽上传</span>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-launch">
+              🚀 一键发射到 Jumpbot
+            </button>
+          </form>
+          <div class="launch-result" id="launchResult" style="display:none"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logos">
+      <span>Powered by</span>
+      <strong>OKX OnchainOS</strong>
+      <span class="logo-x">×</span>
+      <strong>Jumpbot.ai</strong>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.okx.com/web3" target="_blank">OKX Web3</a>
+      <a href="https://jumpbot.ai" target="_blank">Jumpbot</a>
+      <a href="https://github.com/okx/onchainos-skills" target="_blank">OnchainOS Skills</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

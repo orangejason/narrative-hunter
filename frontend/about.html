@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于 Jumpbot.fun | Powered by OKX Onchain OS</title>
+  <link rel="stylesheet" href="style.css?v=20260318a">
+  <style>
+    /* ===== About Page Layout ===== */
+    .about-page { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ===== Hero ===== */
+    .hero {
+      text-align: center;
+      padding: 80px 20px 60px;
+    }
+    .hero-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0,212,170,0.25);
+    }
+    .hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .hero-subtitle {
+      font-size: 22px;
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--accent), #3B82F6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+    .hero-tagline {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ===== Section Titles ===== */
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .section-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    /* ===== OKX Onchain OS Section ===== */
+    .okx-section {
+      position: relative;
+      padding: 60px 0 50px;
+      margin: 0 -24px;
+      padding-left: 24px;
+      padding-right: 24px;
+      background: linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(59,130,246,0.04) 50%, transparent 100%);
+      border-top: 1px solid rgba(0,212,170,0.15);
+      border-bottom: 1px solid rgba(0,212,170,0.08);
+    }
+    .okx-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .okx-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(0,212,170,0.12), rgba(59,130,246,0.12));
+      border: 1px solid rgba(0,212,170,0.25);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 20px;
+    }
+    .okx-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .okx-card {
+      background: linear-gradient(135deg, rgba(0,212,170,0.04), rgba(59,130,246,0.03));
+      border: 1px solid rgba(0,212,170,0.12);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .okx-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), #3B82F6);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .okx-card:hover {
+      border-color: rgba(0,212,170,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,212,170,0.08);
+    }
+    .okx-card:hover::after { opacity: 1; }
+    .okx-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(0,212,170,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+    .okx-card-icon svg { width: 22px; height: 22px; }
+    .okx-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .okx-card-api {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+    .okx-card-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .okx-card-new {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #F59E0B, #EF4444);
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== Feature Cards ===== */
+    .features-section { padding: 60px 0 40px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .feat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: all 0.25s ease;
+    }
+    .feat-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+    .feat-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .feat-card-icon svg { width: 24px; height: 24px; }
+    .feat-card-icon.fire { background: linear-gradient(135deg, #F59E0B, #EF4444); }
+    .feat-card-icon.rocket { background: linear-gradient(135deg, var(--accent), #3B82F6); }
+    .feat-card-icon.money { background: linear-gradient(135deg, #10B981, #059669); }
+    .feat-card-icon.chart { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+    .feat-card-icon.chain { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+    .feat-card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .feat-card-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ===== Architecture Section ===== */
+    .arch-section { padding: 50px 0 40px; }
+    .arch-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .arch-layer {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      padding: 24px 28px;
+      text-align: center;
+      position: relative;
+    }
+    .arch-layer:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+    .arch-layer:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+    .arch-layer + .arch-layer { border-top: none; }
+    .arch-layer-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .arch-layer-content {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .arch-layer.highlight {
+      background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(59,130,246,0.06));
+      border-color: rgba(0,212,170,0.2);
+    }
+    .arch-layer.highlight .arch-layer-content {
+      color: var(--accent-light);
+    }
+    .arch-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .arch-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .arch-tag {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: rgba(0,212,170,0.08);
+      color: var(--accent);
+      border: 1px solid rgba(0,212,170,0.15);
+      font-family: var(--font-mono);
+    }
+
+    /* ===== Footer ===== */
+    .about-footer {
+      text-align: center;
+      padding: 50px 20px 30px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-powered {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(59,130,246,0.06));
+      border: 1px solid rgba(0,212,170,0.15);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+    }
+    .footer-powered svg { width: 18px; height: 18px; color: var(--accent); }
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ===== Back link in header ===== */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .back-link:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      background: var(--accent-dim);
+    }
+    .back-link svg { width: 14px; height: 14px; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .hero { padding: 50px 16px 40px; }
+      .hero-title { font-size: 32px; }
+      .hero-subtitle { font-size: 18px; }
+      .okx-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .about-page { padding: 0 16px 60px; }
+      .okx-section { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-group">
+        <a href="index.html"><img src="jumpbot-logo.png" alt="Jumpbot" class="nh-logo" /></a>
+      </div>
+      <span class="site-subtitle">产品介绍</span>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+        返回首页
+      </a>
+    </div>
+  </header>
+
+  <div class="about-page">
+
+    <!-- ===== Hero Section ===== -->
+    <section class="hero">
+      <img src="jumpbot-logo.png" alt="Jumpbot.fun" class="hero-logo" />
+      <h1 class="hero-title">Jumpbot.fun</h1>
+      <p class="hero-subtitle">Powered by OKX Onchain OS</p>
+      <p class="hero-tagline">
+        Web4.0 AI 驱动的 Meme Token 发射平台。<br>
+        从叙事发现、智能分析到一键发币，全链路由 AI 与链上基础设施驱动。
+      </p>
+    </section>
+
+    <!-- ===== OKX Onchain OS Section ===== -->
+    <section class="okx-section">
+      <div style="max-width:1100px;margin:0 auto;">
+        <span class="okx-badge">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="16" height="16" rx="3"/><path d="M7 7h6M7 10h6M7 13h4"/></svg>
+          核心基础设施
+        </span>
+        <h2 class="section-title">OKX Onchain OS</h2>
+        <p class="section-desc">
+          Jumpbot.fun 的所有链上能力均由 OKX Onchain OS 提供支持。<br>
+          六大 API 模块覆盖行情、交易、钱包、信号等完整链上生命周期。
+        </p>
+
+        <div class="okx-grid">
+          <!-- DEX Market API -->
+          <div class="okx-card">
+            <div class="okx-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>
+            </div>
+            <div class="okx-card-title">DEX Market API</div>
+            <div class="okx-card-api">OKX DEX Market</div>
+            <div class="okx-card-desc">实时链上代币价格、K线图表、历史成交数据。为叙事代币排行和趋势分析提供底层行情支撑。</div>
+          </div>
+
+          <!-- DEX Swap API -->
+          <div class="okx-card">
+            <div class="okx-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h13l-4-4"/><path d="M17 14H4l4 4"/></svg>
+            </div>
+            <div class="okx-card-title">DEX Swap API</div>
+            <div class="okx-card-api">OKX DEX Aggregator</div>
+            <div class="okx-card-desc">聚合 500+ DEX 流动性来源，智能路由寻找最优价格。支持跨链 Swap 和限价单功能。</div>
+          </div>
+
+          <!-- DEX Token API -->
+          <div class="okx-card">
+            <div class="okx-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M6 12h12"/></svg>
+            </div>
+            <div class="okx-card-title">DEX Token API</div>
+            <div class="okx-card-api">OKX Token Discovery</div>
+            <div class="okx-card-desc">代币搜索、热门排行、持仓者分析。驱动平台的热门代币发现和代币详情展示功能。</div>
+          </div>
+
+          <!-- Wallet Portfolio API -->
+          <div class="okx-card">
+            <div class="okx-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 10H18a2 2 0 000 4h4"/><circle cx="18" cy="12" r="1" fill="currentColor" stroke="none"/></svg>
+            </div>
+            <div class="okx-card-title">Wallet Portfolio API</div>
+            <div class="okx-card-api">OKX Portfolio Tracker</div>
+            <div class="okx-card-desc">多链余额查询、DeFi 持仓追踪、资产组合管理。为钱包连接和资产展示提供数据支持。</div>
+          </div>
+
+          <!-- Onchain Gateway API -->
+          <div class="okx-card">
+            <div class="okx-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="okx-card-title">Onchain Gateway API</div>
+            <div class="okx-card-api">OKX Gateway</div>
+            <div class="okx-card-desc">Gas 估算、交易模拟、交易广播。确保一键发币和代币交易的可靠上链执行。</div>
+          </div>
+
+          <!-- Signal API (NEW) -->
+          <div class="okx-card">
+            <span class="okx-card-new">NEW</span>
+            <div class="okx-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="okx-card-title">Signal API</div>
+            <div class="okx-card-api">OKX Smart Signal</div>
+            <div class="okx-card-desc">聪明钱信号、KOL 交易追踪、巨鲸动向监控。实时捕捉链上 Alpha，驱动平台的智能钱追踪功能。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Core Features Section ===== -->
+    <section class="features-section">
+      <h2 class="section-title">核心功能</h2>
+      <p class="section-desc">AI + 链上基础设施，打造从叙事发现到代币发射的完整闭环。</p>
+
+      <div class="features-grid">
+        <!-- 实时热点叙事 -->
+        <div class="feat-card">
+          <div class="feat-card-icon fire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 2.5 2 5 2 7a4 4 0 01-4 4c0-2.5 2-5 2-7z"/><path d="M12 22c4.4 0 8-3.6 8-8 0-4-2.5-7-4-9-.5 2-2 4.5-4 6-2-1.5-3.5-4-4-6-1.5 2-4 5-4 9 0 4.4 3.6 8 8 8z"/></svg>
+          </div>
+          <div class="feat-card-title">实时热点叙事</div>
+          <div class="feat-card-desc">AI 引擎实时分析 Twitter KOL 推文、新闻资讯与链上数据，自动发现并排序最热 Meme 叙事。</div>
+        </div>
+
+        <!-- 一键发币 -->
+        <div class="feat-card">
+          <div class="feat-card-icon rocket">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 1.5 4 5 4 10l-4 6-4-6c0-5 3-8.5 4-10z"/><path d="M8 12l-2 5 3-.7M16 12l2 5-3-.7"/><path d="M10 20l-.5 2M14 20l.5 2"/></svg>
+          </div>
+          <div class="feat-card-title">一键发币</div>
+          <div class="feat-card-desc">集成 Four.meme、Flap.sh、Jumpbot.fun 发射台，从叙事灵感到代币上链只需一步。</div>
+        </div>
+
+        <!-- 聪明钱追踪 -->
+        <div class="feat-card">
+          <div class="feat-card-icon money">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v2M12 16v2"/><path d="M9.5 9.5c0-1.1 1.1-2 2.5-2s2.5.9 2.5 2c0 1.5-2.5 1.5-2.5 3"/><circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="feat-card-title">聪明钱追踪</div>
+          <div class="feat-card-desc">基于 OKX Signal API，追踪聪明钱、KOL 和巨鲸的链上交易行为，发现早期 Alpha 机会。</div>
+        </div>
+
+        <!-- 叙事代币排行 -->
+        <div class="feat-card">
+          <div class="feat-card-icon chart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8" rx="1"/><rect x="14" y="6" width="3" height="12" rx="1"/></svg>
+          </div>
+          <div class="feat-card-title">叙事代币排行</div>
+          <div class="feat-card-desc">叙事关联代币实时排行，价格、涨跌幅、交易量、流动性一目了然，由 OKX DEX Market API 驱动。</div>
+        </div>
+
+        <!-- 多链支持 -->
+        <div class="feat-card">
+          <div class="feat-card-icon chain">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.5.5l2-2a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.5-.5l-2 2a5 5 0 007 7l1.5-1.5"/></svg>
+          </div>
+          <div class="feat-card-title">多链支持</div>
+          <div class="feat-card-desc">通过 OKX Onchain OS 统一接入 Solana、BSC、Base 等多条公链，一套 API 覆盖全链生态。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Architecture Section ===== -->
+    <section class="arch-section">
+      <h2 class="section-title">技术架构</h2>
+      <p class="section-desc">OKX Onchain OS 如何驱动 Jumpbot.fun 的每一层能力。</p>
+
+      <div class="arch-flow">
+        <div class="arch-layer">
+          <div class="arch-layer-label">用户层 / Frontend</div>
+          <div class="arch-layer-content">Jumpbot.fun Web App</div>
+          <div class="arch-tags">
+            <span class="arch-tag">叙事看板</span>
+            <span class="arch-tag">代币排行</span>
+            <span class="arch-tag">智能钱追踪</span>
+            <span class="arch-tag">一键发币</span>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">AI 引擎 / Intelligence</div>
+          <div class="arch-layer-content">Narrative Hunter AI Engine</div>
+          <div class="arch-tags">
+            <span class="arch-tag">GPT-4o</span>
+            <span class="arch-tag">叙事分析</span>
+            <span class="arch-tag">情绪判断</span>
+            <span class="arch-tag">信号聚合</span>
+          </div>
+        </div>
+        <div class="arch-layer highlight">
+          <div class="arch-layer-label">链上基础设施 / Onchain Infrastructure</div>
+          <div class="arch-layer-content" style="font-size:18px;">OKX Onchain OS</div>
+          <div class="arch-tags">
+            <span class="arch-tag">DEX Market</span>
+            <span class="arch-tag">DEX Swap</span>
+            <span class="arch-tag">DEX Token</span>
+            <span class="arch-tag">Wallet Portfolio</span>
+            <span class="arch-tag">Gateway</span>
+            <span class="arch-tag">Signal</span>
+          </div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">区块链 / Blockchains</div>
+          <div class="arch-layer-content">Multi-Chain Network</div>
+          <div class="arch-tags">
+            <span class="arch-tag">Solana</span>
+            <span class="arch-tag">BSC</span>
+            <span class="arch-tag">Base</span>
+            <span class="arch-tag">Ethereum</span>
+            <span class="arch-tag">Arbitrum</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="about-footer">
+    <div class="footer-powered">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Powered by OKX Onchain OS
+    </div>
+    <p class="footer-copy">&copy; 2026 Jumpbot.fun &mdash; AI-Driven Meme Token Launchpad</p>
+  </footer>
+
+</body>
+</html>

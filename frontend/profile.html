@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人中心 | Jumpbot.fun</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+    .profile-page { max-width: 720px; margin: 0 auto; padding: 24px 16px; width: 100%; flex: 1; }
+    .profile-page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .profile-page-header .back-btn { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 13px; transition: all .2s; }
+    .profile-page-header .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .profile-page-header h1 { font-size: 22px; font-weight: 700; color: var(--text); margin: 0; }
+
+    .profile-card { background: var(--card-bg, #181A20); border: 1px solid var(--card-border, rgba(255,255,255,0.08)); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+    .profile-card-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .profile-card-title .count { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+    /* Identity card */
+    .profile-identity { display: flex; align-items: center; gap: 20px; }
+    .profile-identity canvas { border-radius: 50%; border: 2px solid var(--accent); }
+    .profile-identity-info { flex: 1; }
+    .profile-identity-chain { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 3px 10px; border-radius: 20px; border: 1px solid; margin-bottom: 6px; font-weight: 500; }
+    .profile-identity-addr { font-family: 'SF Mono', monospace; font-size: 14px; color: var(--text); word-break: break-all; margin-bottom: 8px; cursor: pointer; }
+    .profile-identity-addr:hover { color: var(--accent); }
+    .profile-identity-actions { display: flex; gap: 8px; }
+    .profile-identity-actions button { font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--text-muted); cursor: pointer; transition: all .2s; }
+    .profile-identity-actions button:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Balance */
+    .profile-balance-row { display: flex; align-items: baseline; gap: 8px; }
+    .profile-balance-big { font-size: 32px; font-weight: 700; color: var(--text); }
+    .profile-balance-sym { font-size: 16px; color: var(--text-muted); font-weight: 500; }
+
+    /* Chain switcher */
+    .profile-chains { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .profile-chain-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: none; color: var(--text-muted); cursor: pointer; font-size: 13px; transition: all .2s; }
+    .profile-chain-btn:hover { border-color: var(--accent); color: var(--text); }
+    .profile-chain-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim, rgba(33,219,243,0.08)); }
+    .profile-chain-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+
+    /* History */
+    .profile-history-list { display: flex; flex-direction: column; gap: 12px; }
+    .profile-history-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: border-color .2s; }
+    .profile-history-item:hover { border-color: var(--accent-border, rgba(33,219,243,0.2)); }
+    .profile-history-logo { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: var(--accent-dim); flex-shrink: 0; }
+    .profile-history-logo-fallback { width: 44px; height: 44px; border-radius: 10px; background: var(--accent-dim); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: 700; font-size: 16px; }
+    .profile-history-body { flex: 1; min-width: 0; }
+    .profile-history-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .profile-history-name .sym { font-size: 12px; color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+    .profile-history-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .profile-history-platform { display: inline-flex; align-items: center; gap: 3px; }
+    .profile-history-ca { font-family: 'SF Mono', monospace; font-size: 12px; color: var(--text-dim); cursor: pointer; margin-bottom: 4px; }
+    .profile-history-ca:hover { color: var(--accent); }
+    .profile-history-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .profile-history-links a { font-size: 12px; color: var(--accent); text-decoration: none; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--accent-border, rgba(33,219,243,0.2)); transition: all .2s; }
+    .profile-history-links a:hover { background: var(--accent-dim); }
+
+    .profile-empty-state { text-align: center; padding: 40px 0; color: var(--text-muted); }
+
+    /* Disconnect */
+    .profile-disconnect { margin-top: 8px; text-align: center; }
+    .profile-disconnect button { background: none; border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 8px 24px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all .2s; }
+    .profile-disconnect button:hover { background: rgba(239,68,68,0.1); border-color: #ef4444; }
+
+    .profile-not-connected { text-align: center; padding: 60px 20px; }
+    .profile-not-connected p { color: var(--text-muted); margin-bottom: 16px; font-size: 15px; }
+  </style>
+</head>
+<body>
+<!-- Icon Sprite (minimal set needed for profile) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" id="jb-icons">
+  <symbol id="jb-rocket" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 2c.8 1.2 3 4 3 7.5L10 14 7 9.5C7 6 9.2 3.2 10 2z"/><path d="M7 9.5L5.5 13l2-.5M13 9.5l1.5 3.5-2-.5"/><circle cx="10" cy="7.5" r="1.2" fill="currentColor" stroke="none"/><path d="M9 14.5l-.8 2.5M11 14.5l.8 2.5"/>
+  </symbol>
+  <symbol id="jb-frog" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="7.5" r="2.5"/><circle cx="13.5" cy="7.5" r="2.5"/><ellipse cx="10" cy="13" rx="5.5" ry="4.5"/><path d="M7.5 14.5c1 .8 4 .8 5 0"/><circle cx="6.5" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="13.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="jb-butterfly" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 4v12"/><path d="M10 6c-3-3-8-2-7 2s4 4 7 2"/><path d="M10 6c3-3 8-2 7 2s-4 4-7 2"/><path d="M10 12c-2 2-5 4-4 6s3 0 4-2"/><path d="M10 12c2 2 5 4 4 6s-3 0-4-2"/><circle cx="9" cy="7" r=".8" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r=".8" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="jb-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="3.5" width="8" height="10" rx="1.5"/><path d="M5.5 5H4a1.5 1.5 0 00-1.5 1.5v7A1.5 1.5 0 004 15h6.5A1.5 1.5 0 0012 13.5V12"/>
+  </symbol>
+  <symbol id="jb-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 8L6.5 12L13.5 4"/>
+  </symbol>
+  <symbol id="jb-arrow-left" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 3L5 8L10 13"/>
+  </symbol>
+  <symbol id="jb-wallet" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="5" width="16" height="12" rx="2"/><path d="M2 9h16"/><path d="M6 5V4a2 2 0 012-2h4a2 2 0 012 2v1"/><circle cx="15" cy="13" r="1" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="jb-dot" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="currentColor"/></symbol>
+  <symbol id="jb-external" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/><path d="M10 2h4v4"/><path d="M14 2L8 8"/>
+  </symbol>
+</svg>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo-group">
+      <a href="/"><img src="jumpbot-logo.png" alt="Jumpbot" class="nh-logo" /></a>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="wallet-btn" id="walletBtn" onclick="handleWalletClick()">
+      <svg class="icon icon-sm" aria-hidden="true"><use href="#jb-wallet"></use></svg>
+      <span id="walletBtnLabel">连接钱包</span>
+    </button>
+  </div>
+</header>
+
+<div class="profile-page">
+  <div class="profile-page-header">
+    <button class="back-btn" onclick="window.location.href='/'">
+      <svg class="icon icon-sm" aria-hidden="true"><use href="#jb-arrow-left"></use></svg> 返回
+    </button>
+    <h1>个人中心</h1>
+  </div>
+
+  <!-- Not connected state -->
+  <div id="profileNotConnected" class="profile-not-connected" style="display:none">
+    <p>请先连接钱包查看个人中心</p>
+    <button class="btn btn-primary" onclick="handleWalletClick()">
+      <svg class="icon icon-sm" aria-hidden="true"><use href="#jb-wallet"></use></svg> 连接钱包
+    </button>
+  </div>
+
+  <!-- Connected state -->
+  <div id="profileConnected" style="display:none">
+    <!-- Identity Card -->
+    <div class="profile-card">
+      <div class="profile-identity">
+        <canvas id="pAvatar" width="64" height="64"></canvas>
+        <div class="profile-identity-info">
+          <div class="profile-identity-chain" id="pChainBadge"></div>
+          <div class="profile-identity-addr" id="pAddress" onclick="copyAddr()" title="点击复制地址"></div>
+          <div class="profile-identity-actions">
+            <button onclick="copyAddr()" id="pCopyBtn">复制地址</button>
+            <button onclick="disconnectWallet()" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">断开连接</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance + Chain Switcher -->
+    <div class="profile-card">
+      <div class="profile-card-title">余额</div>
+      <div class="profile-balance-row">
+        <span class="profile-balance-big" id="pBalanceAmt">--</span>
+        <span class="profile-balance-sym" id="pBalanceSym">BNB</span>
+      </div>
+      <div class="profile-chains" id="pChainSwitcher" style="display:none">
+        <button class="profile-chain-btn" data-chainid="0x38" onclick="switchChain('0x38')">
+          <span class="profile-chain-icon" style="background:#F0B90B">B</span> BNB Chain
+        </button>
+        <button class="profile-chain-btn" data-chainid="0x1" onclick="switchChain('0x1')">
+          <span class="profile-chain-icon" style="background:#627EEA">E</span> Ethereum
+        </button>
+        <button class="profile-chain-btn" data-chainid="0x89" onclick="switchChain('0x89')">
+          <span class="profile-chain-icon" style="background:#8247E5">P</span> Polygon
+        </button>
+        <button class="profile-chain-btn" data-chainid="0x2105" onclick="switchChain('0x2105')">
+          <span class="profile-chain-icon" style="background:#0052FF">B</span> Base
+        </button>
+        <button class="profile-chain-btn" data-chainid="0xa4b1" onclick="switchChain('0xa4b1')">
+          <span class="profile-chain-icon" style="background:#28A0F0">A</span> Arbitrum
+        </button>
+      </div>
+    </div>
+
+    <!-- Launch History -->
+    <div class="profile-card">
+      <div class="profile-card-title">发射记录 <span class="count" id="pHistoryCount"></span></div>
+      <div class="profile-history-list" id="pHistoryList">
+        <div class="profile-empty-state">暂无发射记录</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logos">
+    <img src="jumpbot-logo.png" alt="Jumpbot" class="footer-mascot" />
+    <strong>Jumpbot.fun</strong>
+    <span>|</span>
+    <span class="footer-slogan">AI Narrative Sniper</span>
+  </div>
+  <div class="footer-links">
+    <a href="https://web4.jumpbot.fun" target="_blank">web4.jumpbot.fun</a>
+  </div>
+</footer>
+
+<script>
+// ===== Helpers =====
+function icon(id, cls = '') {
+  return `<svg class="icon${cls ? ' ' + cls : ''}" aria-hidden="true"><use href="#${id}"></use></svg>`;
+}
+
+function hashCode(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+  return h;
+}
+
+function generateColors(seed) {
+  const h = Math.abs(hashCode(seed));
+  const hue = (h % 360);
+  const hue2 = (hue + 180) % 360;
+  return { color: `hsl(${hue},60%,55%)`, bg: `hsl(${hue2},20%,12%)`, spot: `hsl(${hue},40%,35%)` };
+}
+
+function drawBlockie(seed, canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = 8, scale = canvas.width / size;
+  const colors = generateColors(seed);
+  ctx.fillStyle = colors.bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const hash = hashCode(seed.toLowerCase());
+  for (let i = 0; i < size * size; i++) {
+    const x = i % size, y = Math.floor(i / size);
+    if ((hash >> i) & 1) {
+      ctx.fillStyle = (hash >> (i + 1)) & 1 ? colors.spot : colors.color;
+      const mirrorX = size - 1 - x;
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+      if (x < size / 2) ctx.fillRect(mirrorX * scale, y * scale, scale, scale);
+    }
+  }
+}
+
+async function copyText(text, el) {
+  try {
+    await navigator.clipboard.writeText(text);
+    if (el) { const old = el.innerHTML; el.innerHTML = icon('jb-check','icon-sm icon-success') + ' 已复制'; setTimeout(() => { el.innerHTML = old; }, 1500); }
+  } catch {}
+}
+
+// ===== Wallet State =====
+const CHAIN_META = {
+  '0x1':    { name: 'Ethereum',  symbol: 'ETH',  color: '#627EEA', explorer: 'https://etherscan.io' },
+  '0x38':   { name: 'BNB Chain', symbol: 'BNB',  color: '#F0B90B', explorer: 'https://bscscan.com' },
+  '0x89':   { name: 'Polygon',   symbol: 'MATIC', color: '#8247E5', explorer: 'https://polygonscan.com' },
+  '0x2105': { name: 'Base',      symbol: 'ETH',  color: '#0052FF', explorer: 'https://basescan.org' },
+  '0xa4b1': { name: 'Arbitrum',  symbol: 'ETH',  color: '#28A0F0', explorer: 'https://arbiscan.io' },
+};
+
+const EVM_RPC = {
+  '0x1': 'https://cloudflare-eth.com', '0x38': 'https://bsc-dataseed.binance.org/',
+  '0x89': 'https://polygon-rpc.com', '0x2105': 'https://mainnet.base.org', '0xa4b1': 'https://arb1.arbitrum.io/rpc',
+};
+
+let walletState = null;
+try { walletState = JSON.parse(localStorage.getItem('nh_wallet')); } catch {}
+
+function saveWalletState(s) { localStorage.setItem('nh_wallet', JSON.stringify(s)); walletState = s; }
+
+function getActiveEvmProvider() {
+  if (!walletState || walletState.chain !== 'evm') return null;
+  if (walletState.type === 'okx' && window.okxwallet) return window.okxwallet;
+  if (walletState.type === 'metamask') {
+    if (window.ethereum?.providers) { const mm = window.ethereum.providers.find(p => p.isMetaMask); if (mm) return mm; }
+    return window.ethereum;
+  }
+  return window.ethereum;
+}
+
+function handleWalletClick() {
+  if (walletState) { renderProfile(); return; }
+  // Simple connect: try MetaMask/OKX
+  if (window.ethereum) {
+    window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
+      const addr = accounts[0];
+      const type = window.okxwallet ? 'okx' : 'metamask';
+      window.ethereum.request({ method: 'eth_chainId' }).then(chainId => {
+        saveWalletState({ address: addr, chain: 'evm', type, chainId });
+        renderProfile();
+      });
+    }).catch(() => {});
+  }
+}
+
+function disconnectWallet() {
+  localStorage.removeItem('nh_wallet');
+  walletState = null;
+  renderProfile();
+  updateWalletBtn();
+}
+
+function updateWalletBtn() {
+  const label = document.getElementById('walletBtnLabel');
+  if (walletState) {
+    const short = walletState.address.slice(0, 6) + '...' + walletState.address.slice(-4);
+    label.textContent = short;
+  } else {
+    label.textContent = '连接钱包';
+  }
+}
+
+async function copyAddr() {
+  if (!walletState) return;
+  try {
+    await navigator.clipboard.writeText(walletState.address);
+    const btn = document.getElementById('pCopyBtn');
+    btn.innerHTML = icon('jb-check','icon-sm icon-success') + ' 已复制';
+    setTimeout(() => { btn.textContent = '复制地址'; }, 1500);
+  } catch {}
+}
+
+async function switchChain(chainId) {
+  const prov = getActiveEvmProvider();
+  if (!prov) return;
+  try {
+    await prov.request({ method: 'wallet_switchEthereumChain', params: [{ chainId }] });
+    walletState.chainId = chainId;
+    saveWalletState(walletState);
+    renderProfile();
+  } catch (e) {
+    const configs = {
+      '0x89': { chainId: '0x89', chainName: 'Polygon', nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] },
+      '0x2105': { chainId: '0x2105', chainName: 'Base', nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.base.org'], blockExplorerUrls: ['https://basescan.org'] },
+      '0xa4b1': { chainId: '0xa4b1', chainName: 'Arbitrum One', nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://arb1.arbitrum.io/rpc'], blockExplorerUrls: ['https://arbiscan.io'] },
+    };
+    if (e.code === 4902 && configs[chainId]) {
+      try {
+        await prov.request({ method: 'wallet_addEthereumChain', params: [configs[chainId]] });
+        walletState.chainId = chainId;
+        saveWalletState(walletState);
+        renderProfile();
+      } catch {}
+    }
+  }
+}
+
+async function fetchBalance(address, chain, chainId) {
+  const amtEl = document.getElementById('pBalanceAmt');
+  const symEl = document.getElementById('pBalanceSym');
+  try {
+    if (chain === 'sol') {
+      const resp = await fetch('https://api.mainnet-beta.solana.com', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getBalance', params: [address] })
+      });
+      const data = await resp.json();
+      const sol = (data.result?.value || 0) / 1e9;
+      amtEl.textContent = sol.toFixed(4);
+      symEl.textContent = 'SOL';
+    } else {
+      const cid = chainId || '0x38';
+      const meta = CHAIN_META[cid] || CHAIN_META['0x38'];
+      const rpc = EVM_RPC[cid] || EVM_RPC['0x38'];
+      const resp = await fetch(rpc, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_getBalance', params: [address, 'latest'] })
+      });
+      const data = await resp.json();
+      const bal = parseInt(data.result || '0x0', 16) / 1e18;
+      amtEl.textContent = bal.toFixed(4);
+      symEl.textContent = meta.symbol;
+    }
+  } catch {
+    amtEl.textContent = '--';
+    symEl.textContent = chain === 'sol' ? 'SOL' : (CHAIN_META[chainId] || CHAIN_META['0x38']).symbol;
+  }
+}
+
+function getPlatformLabel(platform) {
+  if (platform === 'fourmeme') return `${icon('jb-frog','icon-sm')} Four.meme`;
+  if (platform === 'flapsh') return `${icon('jb-butterfly','icon-sm')} Flap.sh`;
+  return `${icon('jb-rocket','icon-sm')} Jumpbot.fun`;
+}
+
+function getTokenPageUrl(platform, ca) {
+  if (!ca) return null;
+  if (platform === 'fourmeme') return `https://four.meme/token/${ca}`;
+  if (platform === 'flapsh') return `https://flap.sh/coin/${ca}`;
+  return `https://jumpad.fun/token/${ca}`;
+}
+
+function getTxExplorerUrl(platform, tx) {
+  if (!tx) return null;
+  const isBsc = platform === 'fourmeme' || platform === 'flapsh';
+  if (isBsc || tx.startsWith('0x')) return `https://bscscan.com/tx/${tx}`;
+  return `https://solscan.io/tx/${tx}`;
+}
+
+function getContractExplorerUrl(platform, ca) {
+  if (!ca) return null;
+  const isBsc = platform === 'fourmeme' || platform === 'flapsh';
+  if (isBsc || ca.startsWith('0x')) return `https://bscscan.com/token/${ca}`;
+  return `https://solscan.io/token/${ca}`;
+}
+
+function getPlatformName(platform) {
+  if (platform === 'fourmeme') return 'Four.meme';
+  if (platform === 'flapsh') return 'Flap.sh';
+  return 'Jumpbot.fun';
+}
+
+function loadHistory() {
+  const el = document.getElementById('pHistoryList');
+  const countEl = document.getElementById('pHistoryCount');
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('nh_launch_history')) || []; } catch {}
+
+  if (countEl) countEl.textContent = history.length ? `(${history.length})` : '';
+  if (!history.length) { el.innerHTML = '<div class="profile-empty-state">暂无发射记录</div>'; return; }
+
+  el.innerHTML = history.slice(0, 30).map(h => {
+    const platformLabel = getPlatformLabel(h.platform);
+    const dateStr = new Date(h.time).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const shortCa = h.ca ? h.ca.slice(0, 8) + '...' + h.ca.slice(-6) : '';
+
+    // Build links — always show platform link even without CA
+    let links = '';
+    const tokenUrl = h.url || getTokenPageUrl(h.platform, h.ca);
+    const platformHome = h.platform === 'fourmeme' ? 'https://four.meme' : h.platform === 'flapsh' ? 'https://flap.sh' : 'https://jumpad.fun';
+    const platformLink = tokenUrl || platformHome;
+    links += `<a href="${platformLink}" target="_blank">${icon('jb-external','icon-sm')} ${getPlatformName(h.platform)}</a>`;
+    if (h.tx) links += `<a href="${getTxExplorerUrl(h.platform, h.tx)}" target="_blank">${icon('jb-external','icon-sm')} TX</a>`;
+    if (h.ca && !tokenUrl) links += `<a href="${getContractExplorerUrl(h.platform, h.ca)}" target="_blank">${icon('jb-external','icon-sm')} 合约</a>`;
+
+    const logoHtml = h.logo
+      ? `<img class="profile-history-logo" src="${h.logo}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="profile-history-logo-fallback" style="display:none">${(h.symbol || '?')[0]}</div>`
+      : `<div class="profile-history-logo-fallback">${(h.symbol || '?')[0]}</div>`;
+
+    return `
+    <div class="profile-history-item">
+      ${logoHtml}
+      <div class="profile-history-body">
+        <div class="profile-history-name">${h.name || h.symbol}<span class="sym">$${h.symbol}</span></div>
+        <div class="profile-history-meta"><span class="profile-history-platform">${platformLabel}</span> <span>${dateStr}</span></div>
+        ${shortCa ? `<div class="profile-history-ca" onclick="copyText('${h.ca}',this)" title="点击复制 CA">CA: ${shortCa} ${icon('jb-copy','icon-sm')}</div>` : ''}
+        ${links ? `<div class="profile-history-links">${links}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderProfile() {
+  updateWalletBtn();
+  if (!walletState) {
+    document.getElementById('profileNotConnected').style.display = 'block';
+    document.getElementById('profileConnected').style.display = 'none';
+    return;
+  }
+  document.getElementById('profileNotConnected').style.display = 'none';
+  document.getElementById('profileConnected').style.display = 'block';
+
+  const { address, chain, chainId } = walletState;
+
+  // Avatar
+  drawBlockie(address, document.getElementById('pAvatar'));
+
+  // Chain badge
+  if (chain === 'sol') {
+    const b = document.getElementById('pChainBadge');
+    b.innerHTML = `${icon('jb-dot','icon-sm')} Solana`;
+    b.style.color = '#A78BFA'; b.style.background = 'rgba(139,92,246,0.12)'; b.style.borderColor = 'rgba(139,92,246,0.3)';
+  } else {
+    const meta = CHAIN_META[chainId] || CHAIN_META['0x38'];
+    const b = document.getElementById('pChainBadge');
+    b.innerHTML = `${icon('jb-dot','icon-sm')} ${meta.name}`;
+    b.style.color = meta.color; b.style.background = meta.color + '1a'; b.style.borderColor = meta.color + '40';
+  }
+
+  // Address
+  document.getElementById('pAddress').textContent = address;
+
+  // Chain switcher
+  const switcher = document.getElementById('pChainSwitcher');
+  if (chain === 'evm') {
+    switcher.style.display = 'flex';
+    document.querySelectorAll('.profile-chain-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.chainid === chainId);
+    });
+  } else {
+    switcher.style.display = 'none';
+  }
+
+  // Balance
+  fetchBalance(address, chain, chainId);
+
+  // History
+  loadHistory();
+}
+
+// ===== Theme =====
+(function initTheme() {
+  const themes = {
+    cyan: '#21DBF3', blue: '#3B82F6', green: '#22C55E', purple: '#A855F7', orange: '#F97316', red: '#EF4444'
+  };
+  const saved = localStorage.getItem('nh_theme') || 'cyan';
+  const color = themes[saved] || themes.cyan;
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent-dim', color + '14');
+  document.documentElement.style.setProperty('--accent-border', color + '33');
+})();
+
+// Init
+renderProfile();
+</script>
+</body>
+</html>
